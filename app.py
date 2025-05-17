@@ -20,15 +20,21 @@ def load_data():
 
 df = load_data()
 
-# Sidebar plot selector
-plot_type = st.sidebar.selectbox(
-    "Choose a plot to display:",
-    ["Flipper Length Distribution", "Body Mass by Species", "Bill Dimensions Scatterplot"]
-)
+# Sidebar button navigation
+st.sidebar.title("Select a Plot")
+plot_selected = None
+
+if st.sidebar.button("📊 Flipper Length Distribution"):
+    plot_selected = "flipper"
+elif st.sidebar.button("📦 Body Mass by Species"):
+    plot_selected = "body_mass"
+elif st.sidebar.button("📐 Bill Dimensions Scatterplot"):
+    plot_selected = "bill_dims"
 
 # Plot 1: Flipper Length Distribution
-if plot_type == "Flipper Length Distribution":
+if plot_selected == "flipper":
     st.subheader("Distribution of Flipper Length (mm)")
+    st.markdown("This plot shows the distribution of penguin flipper lengths. It helps us understand the common sizes and variability within the species.")
     fig, ax = plt.subplots()
     sns.histplot(df['flipper_length_mm'], kde=True, color='teal', ax=ax)
     ax.set_xlabel("Flipper Length (mm)")
@@ -36,8 +42,9 @@ if plot_type == "Flipper Length Distribution":
     st.pyplot(fig)
 
 # Plot 2: Body Mass by Species
-elif plot_type == "Body Mass by Species":
+elif plot_selected == "body_mass":
     st.subheader("Body Mass by Penguin Species")
+    st.markdown("This boxplot displays the spread and central tendency of body mass across different penguin species. Useful for comparing typical sizes.")
     fig, ax = plt.subplots()
     sns.boxplot(x='species', y='body_mass_g', data=df, palette='Set2', ax=ax)
     ax.set_xlabel("Species")
@@ -45,8 +52,9 @@ elif plot_type == "Body Mass by Species":
     st.pyplot(fig)
 
 # Plot 3: Bill Dimensions Scatterplot
-elif plot_type == "Bill Dimensions Scatterplot":
+elif plot_selected == "bill_dims":
     st.subheader("Bill Length vs Depth by Species and Sex")
+    st.markdown("This scatterplot explores the relationship between bill length and depth, color-coded by species and shaped by sex.")
     fig, ax = plt.subplots()
     sns.scatterplot(
         data=df,
@@ -59,6 +67,10 @@ elif plot_type == "Bill Dimensions Scatterplot":
     ax.set_xlabel("Bill Length (mm)")
     ax.set_ylabel("Bill Depth (mm)")
     st.pyplot(fig)
+
+# Default message if no plot selected yet
+if plot_selected is None:
+    st.info("👈 Use the buttons on the left to select a plot to display.")
 
 # Optional data viewer
 with st.expander("📄 Show raw data"):
